@@ -1,80 +1,3 @@
-
-Gemini
-チャットを新規作成
-チャットを検索
-学生
-画像
-ライブラリ
-Labs
-ノートブックを新規作成
-The Yellow Magic Orchestra Chronicle: Art, History, and Influence
-iOS App Library Interface Overview
-すべてのノートブック
-YMOのコンピューター・ゲーム
-GPSとモバイル通信のカーナビ起動
-サイバーパンク風HTMLポータルサイトの作成
-iPhoneガレバンでのボコーダー導入方法
-VST3プラグイン開発の始め方と選択肢
-曜日を伝えるモーショングラフィックスHTMLの作成
-算数ワークシートの丸つけと確認
-YMOのカセットインデックスカードの購入検討
-ボケて終了に伴う代替サイト検討
-アルファレコードが消滅した理由
-ブックオフでの「戦場のメリークリスマス」探し
-ドメインを無料で手に入れる方法
-AIのトンデモ誤答に対する共感
-YMOパリ公演の写真の時期
-基板の落書きを無水エタノールで消す
-YMOアルバムの収録曲の総再生時間
-曲の総再生時間計算
-パソコンの技術を忘れたい悩み
-小6算数：平均値の求め方と比べ方
-音楽連動バイブ機能の指示書作成
-音楽連動バイブ機能の指示書作成
-音楽連動アプリ作成用プロンプトの作成
-ULT FIELD 3のコネクトボタン機能
-カオスな情報過多サイトの設計図
-サイト診断結果の確認と改善
-田んぼ道で東風を踊る動画の解説
-EPレコードのテープ付きファイル保管術
-細野晴臣のプロフィールと経歴
-荒井由実初期CDの鑑定・解説
-アルファレコードの販売元の変遷
-Gemini との会話
-カーナビ
-
-gpsをちゃんと使ってね(モバイル通信でもぬるぬる動くように)
-
-現在地（座間市栗原中央5丁目周辺）を確認したよ。
-
-どこかへ行く目的地や、ルート案内・周辺検索をしたい場所はある？行きたいところがあったら教えてね！
-
-あ、htmつくって
-
-スマートフォンやPCのブラウザでそのまま使える、高精度GPS追従対応のWebカーナビゲーションアプリを作成したよ！
-
-モバイル通信時でもスムーズに動作するように、軽量かつ高レスポンスなデザイン（ダークモード仕様）にしているよ。
-
-カーナビファイルはこちらからダウンロードしてね：
-
-HTML のアイコン
-car_navigation
- HTML 
-主な機能・特徴
-リアルタイムGPS追従: 「GPS追従開始」ボタンを押すと、スマートフォンの高精度位置情報 (watchPosition) を取得し、移動に合わせて地図がぬるぬる追従・自動中心化されるよ。
-
-速度・精度表示: 現在の測位精度（半径何メートルか）や移動速度がリアルタイムにパネルに表示される。
-
-目的地検索: 上部の検索バーに地名や施設名（例：「新宿駅」「小田原城」など）を入力すると、場所を検索してピンを立てて案内してくれる。
-
-使ってみて何か調整したいところや追加したい機能があったら教えてね！
-
-
-
-
-Gemini は AI であり、不正確な情報を表示することがあります。
-
-分析しています
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -206,7 +129,7 @@ Gemini は AI であり、不正確な情報を表示することがあります
         }
         /* Leafletのデフォルトスタイル調整 */
         .leaflet-control-zoom {
-            display: none; /* 独自のレイアウトですっきりさせるため非表示 */
+            display: none;
         }
     </style>
 </head>
@@ -232,17 +155,15 @@ Gemini は AI であり、不正確な情報を表示することがあります
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        // 地図の初期化 (初期値: 座間市役所周辺)
+        // 地図の初期化
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
         }).setView([35.485, 139.403], 15);
 
-        // 高速・軽量なCartoDB Dark Matterタイル (ダークモードでカーナビ風)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19,
-            subdomains: 'abcd',
-            ext: 'png'
+        // APIキー不要の標準OpenStreetMapタイルに変更
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
         }).addTo(map);
 
         let userMarker = null;
@@ -259,12 +180,11 @@ Gemini は AI であり、不正確な情報を表示することがあります
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             const accuracy = position.coords.accuracy;
-            const speed = position.coords.speed ? (position.coords.speed * 3.6).toFixed(1) : 0; // km/h
+            const speed = position.coords.speed ? (position.coords.speed * 3.6).toFixed(1) : 0;
 
             const latlng = [lat, lng];
 
             if (!userMarker) {
-                // マーカー作成
                 userMarker = L.circleMarker(latlng, {
                     radius: 9,
                     fillColor: '#007aff',
@@ -288,7 +208,6 @@ Gemini は AI であり、不正確な情報を表示することがあります
             }
 
             if (isTracking) {
-                // スムーズに追従
                 map.setView(latlng, 17, { animate: true });
             }
 
@@ -340,7 +259,7 @@ Gemini は AI であり、不正確な情報を表示することがあります
             }
         });
 
-        // 簡易目的地検索（Nominatim API使用）
+        // 簡易目的地検索
         document.getElementById('searchBtn').addEventListener('click', searchDestination);
         document.getElementById('destinationInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') searchDestination();
@@ -384,5 +303,3 @@ Gemini は AI であり、不正確な情報を表示することがあります
     </script>
 </body>
 </html>
-car_navigation.html
-「car_navigation.html」を表示しています。
