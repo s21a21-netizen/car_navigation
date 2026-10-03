@@ -157,10 +157,10 @@
             attributionControl: false
         }).setView([35.485, 139.403], 15);
 
-        // 国土地理院の標準地図タイルに変更（APIキー不要・商用/個人利用制限なしで安定）
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            minZoom: 2
+        // CARTOの無料パブリック・ダークモードタイル（APIキー不要・オープンエンドで利用可能）
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            subdomains: 'abcd'
         }).addTo(map);
 
         let userMarker = null;
@@ -275,7 +275,7 @@
                         const destLatLng = [lat, lon];
 
                         if (destMarker) {
-                            map.removeLayer(destMarker);
+                            map.map.removeLayer(destMarker);
                         }
 
                         destMarker = L.marker(destLatLng).addTo(map)
