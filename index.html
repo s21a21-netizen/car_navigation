@@ -28,7 +28,6 @@
             left: 0;
             z-index: 1;
         }
-        /* コントロールパネル・UI */
         .ui-container {
             position: absolute;
             top: 15px;
@@ -77,7 +76,6 @@
         .search-box button:active {
             background: #0056b3;
         }
-        /* ステータス・情報表示パネル */
         .info-panel {
             position: absolute;
             bottom: 25px;
@@ -127,7 +125,6 @@
             background: #dc3545;
             box-shadow: 0 2px 10px rgba(220, 53, 69, 0.4);
         }
-        /* Leafletのデフォルトスタイル調整 */
         .leaflet-control-zoom {
             display: none;
         }
@@ -155,15 +152,15 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        // 地図の初期化
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
         }).setView([35.485, 139.403], 15);
 
-        // APIキー不要の標準OpenStreetMapタイルに変更
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
+        // 国土地理院の標準地図タイルに変更（APIキー不要・商用/個人利用制限なしで安定）
+        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 2
         }).addTo(map);
 
         let userMarker = null;
@@ -175,7 +172,6 @@
         const gpsStatusElem = document.getElementById('gpsStatus');
         const gpsToggleBtn = document.getElementById('gpsToggleBtn');
 
-        // 現在地更新処理
         function updatePosition(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
@@ -231,7 +227,6 @@
             gpsStatusElem.innerText = msg;
         }
 
-        // GPS追従トグル
         gpsToggleBtn.addEventListener('click', () => {
             if (!isTracking) {
                 if ("geolocation" in navigator) {
@@ -259,7 +254,6 @@
             }
         });
 
-        // 簡易目的地検索
         document.getElementById('searchBtn').addEventListener('click', searchDestination);
         document.getElementById('destinationInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') searchDestination();
