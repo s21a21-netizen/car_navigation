@@ -1,0 +1,388 @@
+
+Gemini
+チャットを新規作成
+チャットを検索
+学生
+画像
+ライブラリ
+Labs
+ノートブックを新規作成
+The Yellow Magic Orchestra Chronicle: Art, History, and Influence
+iOS App Library Interface Overview
+すべてのノートブック
+YMOのコンピューター・ゲーム
+GPSとモバイル通信のカーナビ起動
+サイバーパンク風HTMLポータルサイトの作成
+iPhoneガレバンでのボコーダー導入方法
+VST3プラグイン開発の始め方と選択肢
+曜日を伝えるモーショングラフィックスHTMLの作成
+算数ワークシートの丸つけと確認
+YMOのカセットインデックスカードの購入検討
+ボケて終了に伴う代替サイト検討
+アルファレコードが消滅した理由
+ブックオフでの「戦場のメリークリスマス」探し
+ドメインを無料で手に入れる方法
+AIのトンデモ誤答に対する共感
+YMOパリ公演の写真の時期
+基板の落書きを無水エタノールで消す
+YMOアルバムの収録曲の総再生時間
+曲の総再生時間計算
+パソコンの技術を忘れたい悩み
+小6算数：平均値の求め方と比べ方
+音楽連動バイブ機能の指示書作成
+音楽連動バイブ機能の指示書作成
+音楽連動アプリ作成用プロンプトの作成
+ULT FIELD 3のコネクトボタン機能
+カオスな情報過多サイトの設計図
+サイト診断結果の確認と改善
+田んぼ道で東風を踊る動画の解説
+EPレコードのテープ付きファイル保管術
+細野晴臣のプロフィールと経歴
+荒井由実初期CDの鑑定・解説
+アルファレコードの販売元の変遷
+Gemini との会話
+カーナビ
+
+gpsをちゃんと使ってね(モバイル通信でもぬるぬる動くように)
+
+現在地（座間市栗原中央5丁目周辺）を確認したよ。
+
+どこかへ行く目的地や、ルート案内・周辺検索をしたい場所はある？行きたいところがあったら教えてね！
+
+あ、htmつくって
+
+スマートフォンやPCのブラウザでそのまま使える、高精度GPS追従対応のWebカーナビゲーションアプリを作成したよ！
+
+モバイル通信時でもスムーズに動作するように、軽量かつ高レスポンスなデザイン（ダークモード仕様）にしているよ。
+
+カーナビファイルはこちらからダウンロードしてね：
+
+HTML のアイコン
+car_navigation
+ HTML 
+主な機能・特徴
+リアルタイムGPS追従: 「GPS追従開始」ボタンを押すと、スマートフォンの高精度位置情報 (watchPosition) を取得し、移動に合わせて地図がぬるぬる追従・自動中心化されるよ。
+
+速度・精度表示: 現在の測位精度（半径何メートルか）や移動速度がリアルタイムにパネルに表示される。
+
+目的地検索: 上部の検索バーに地名や施設名（例：「新宿駅」「小田原城」など）を入力すると、場所を検索してピンを立てて案内してくれる。
+
+使ってみて何か調整したいところや追加したい機能があったら教えてね！
+
+
+
+
+Gemini は AI であり、不正確な情報を表示することがあります。
+
+分析しています
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Webカーナビ</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #111;
+            color: #eee;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        /* コントロールパネル・UI */
+        .ui-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .search-box {
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            gap: 8px;
+            pointer-events: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .search-box input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-box input::placeholder {
+            color: #888;
+        }
+        .search-box button {
+            background: #007aff;
+            color: #fff;
+            border: none;
+            padding: 0 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .search-box button:active {
+            background: #0056b3;
+        }
+        /* ステータス・情報表示パネル */
+        .info-panel {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+            z-index: 10;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
+            pointer-events: auto;
+        }
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .info-title {
+            font-size: 13px;
+            color: #aaa;
+        }
+        .info-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .gps-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.4);
+        }
+        .gps-btn.active {
+            background: #dc3545;
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.4);
+        }
+        /* Leafletのデフォルトスタイル調整 */
+        .leaflet-control-zoom {
+            display: none; /* 独自のレイアウトですっきりさせるため非表示 */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div class="ui-container">
+        <div class="search-box">
+            <input type="text" id="destinationInput" placeholder="目的地を検索 (例: 東京駅、新宿)">
+            <button id="searchBtn">検索</button>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <div class="info-content">
+            <span class="info-title">自車位置GPSステータス</span>
+            <span class="info-value" id="gpsStatus">待機中...</span>
+        </div>
+        <button class="gps-btn" id="gpsToggleBtn">GPS追従開始</button>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // 地図の初期化 (初期値: 座間市役所周辺)
+        const map = L.map('map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([35.485, 139.403], 15);
+
+        // 高速・軽量なCartoDB Dark Matterタイル (ダークモードでカーナビ風)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            subdomains: 'abcd',
+            ext: 'png'
+        }).addTo(map);
+
+        let userMarker = null;
+        let accuracyCircle = null;
+        let watchId = null;
+        let isTracking = false;
+        let destMarker = null;
+
+        const gpsStatusElem = document.getElementById('gpsStatus');
+        const gpsToggleBtn = document.getElementById('gpsToggleBtn');
+
+        // 現在地更新処理
+        function updatePosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            const speed = position.coords.speed ? (position.coords.speed * 3.6).toFixed(1) : 0; // km/h
+
+            const latlng = [lat, lng];
+
+            if (!userMarker) {
+                // マーカー作成
+                userMarker = L.circleMarker(latlng, {
+                    radius: 9,
+                    fillColor: '#007aff',
+                    color: '#ffffff',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 1
+                }).addTo(map);
+
+                accuracyCircle = L.circle(latlng, {
+                    radius: accuracy,
+                    color: '#007aff',
+                    fillColor: '#007aff',
+                    fillOpacity: 0.15,
+                    weight: 1
+                }).addTo(map);
+            } else {
+                userMarker.setLatLng(latlng);
+                accuracyCircle.setLatLng(latlng);
+                accuracyCircle.setRadius(accuracy);
+            }
+
+            if (isTracking) {
+                // スムーズに追従
+                map.setView(latlng, 17, { animate: true });
+            }
+
+            gpsStatusElem.innerText = `精度: ${Math.round(accuracy)}m / ${speed} km/h`;
+        }
+
+        function onGpsError(error) {
+            console.error(error);
+            let msg = "GPS取得エラー";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    msg = "位置情報の利用が拒否されました";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    msg = "位置情報が取得できません";
+                    break;
+                case error.TIMEOUT:
+                    msg = "タイムアウトしました";
+                    break;
+            }
+            gpsStatusElem.innerText = msg;
+        }
+
+        // GPS追従トグル
+        gpsToggleBtn.addEventListener('click', () => {
+            if (!isTracking) {
+                if ("geolocation" in navigator) {
+                    gpsStatusElem.innerText = "GPS取得中...";
+                    watchId = navigator.geolocation.watchPosition(updatePosition, onGpsError, {
+                        enableHighAccuracy: true,
+                        maximumAge: 0,
+                        timeout: 10000
+                    });
+                    isTracking = true;
+                    gpsToggleBtn.innerText = "追従停止";
+                    gpsToggleBtn.classList.add('active');
+                } else {
+                    alert("お使いのブラウザは位置情報に対応していません。");
+                }
+            } else {
+                if (watchId !== null) {
+                    navigator.geolocation.clearWatch(watchId);
+                    watchId = null;
+                }
+                isTracking = false;
+                gpsToggleBtn.innerText = "GPS追従開始";
+                gpsToggleBtn.classList.remove('active');
+                gpsStatusElem.innerText = "停止中";
+            }
+        });
+
+        // 簡易目的地検索（Nominatim API使用）
+        document.getElementById('searchBtn').addEventListener('click', searchDestination);
+        document.getElementById('destinationInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchDestination();
+        });
+
+        function searchDestination() {
+            const query = document.getElementById('destinationInput').value;
+            if (!query) return;
+
+            gpsStatusElem.innerText = "検索中...";
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lon = parseFloat(data[0].lon);
+                        const destLatLng = [lat, lon];
+
+                        if (destMarker) {
+                            map.removeLayer(destMarker);
+                        }
+
+                        destMarker = L.marker(destLatLng).addTo(map)
+                            .bindPopup(`<b>${data[0].display_name}</b>`).openPopup();
+
+                        map.setView(destLatLng, 15, { animate: true });
+                        gpsStatusElem.innerText = "目的地を設定しました";
+                    } else {
+                        alert("見つかりませんでした");
+                        gpsStatusElem.innerText = "検索失敗";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("検索エラーが発生しました");
+                    gpsStatusElem.innerText = "エラー";
+                });
+        }
+    </script>
+</body>
+</html>
+car_navigation.html
+「car_navigation.html」を表示しています。
